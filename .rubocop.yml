@@ -8,3 +8,10 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+
+Metrics/LineLength:
+  Max: 128
+
+Metrics/AbcSize:
+  Exclude:
+    - test/**/*
