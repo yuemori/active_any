@@ -1,5 +1,7 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require "active_any"
+# frozen_string_literal: true
 
-require "minitest/autorun"
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'active_any'
+
+require 'minitest/autorun'
 require 'minitest-power_assert'

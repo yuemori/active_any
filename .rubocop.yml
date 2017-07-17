@@ -1,0 +1,10 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - active_any.gemspec
+    - Guardfile
+    - vendor/bundle/**/*
+  DisplayCopNames: true
+
+Style/Documentation:
+  Enabled: false
