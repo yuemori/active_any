@@ -3,13 +3,9 @@
 require 'test_helper'
 
 class RelationTest < Minitest::Test
-  class TestObject
+  class EmptyObject
     def self.load
-      [
-        new(id: 1),
-        new(id: 2),
-        new(id: 3)
-      ]
+      []
     end
 
     attr_reader :id
@@ -23,12 +19,24 @@ class RelationTest < Minitest::Test
     end
   end
 
+  class TestObject < EmptyObject
+    def self.load
+      [
+        new(id: 1),
+        new(id: 2),
+        new(id: 3)
+      ]
+    end
+  end
+
   def setup
     @relation = ActiveAny::Relation.new(TestObject)
+    @empty_relation = ActiveAny::Relation.new(EmptyObject)
   end
 
   def test_should_equal_loader_methods_and_load
     assert { @relation.to_a == TestObject.load }
+    assert { @empty_relation.to_a == [] }
   end
 
   def test_should_load_object_be_cached
@@ -43,6 +51,16 @@ class RelationTest < Minitest::Test
   def test_take_with_limit
     assert { @relation.take == TestObject.load.first }
     assert { @relation.take(2) == TestObject.load.take(2) }
+    assert { @empty_relation.take.nil? }
+    assert { @empty_relation.take(3) == [] }
+  end
+
+  def test_limit_value_be_affection_to_result
+    assert { @relation.limit(1).is_a? ActiveAny::Relation }
+    assert { @relation.limit(1).to_a == TestObject.load.take(1) }
+    assert { @relation.limit(3).to_a == TestObject.load.take(3) }
+    assert { @empty_relation.limit(1).to_a == [] }
+    assert { @empty_relation.limit(3).to_a == [] }
   end
 
   def test_where_with_condition
@@ -59,5 +77,6 @@ class RelationTest < Minitest::Test
     assert { @relation.find_by(id: 1).is_a? TestObject }
     assert { @relation.find_by(id: 1) == TestObject.load.first }
     assert { @relation.find_by(id: 3) == TestObject.load.last }
+    assert { @empty_relation.find_by(id: 1).nil? }
   end
 end
