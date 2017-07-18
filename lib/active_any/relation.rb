@@ -53,6 +53,10 @@ module ActiveAny
 
     private
 
+    def where_clause
+      @where_clause ||= WhereClause.new
+    end
+
     def load
       load_records unless loaded
       self
@@ -78,10 +82,6 @@ module ActiveAny
       end
     end
 
-    def where_clause
-      @where_clause ||= {}
-    end
-
     def load_records
       records = exec_query
       records = records.take(@limit_value) if @limit_value
@@ -91,13 +91,8 @@ module ActiveAny
 
     def exec_query
       records = @klass.load
-      return records if where_clause.empty?
-
-      records.select do |r|
-        where_clause.all? do |key, value|
-          r.send(key) == value
-        end
-      end
+      adapter = Adapter.new(records)
+      adapter.query(where_clause.conditions)
     end
   end
 end

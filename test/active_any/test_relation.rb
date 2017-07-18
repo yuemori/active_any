@@ -8,10 +8,11 @@ class RelationTest < Minitest::Test
       []
     end
 
-    attr_reader :id
+    attr_reader :id, :name
 
-    def initialize(id:)
+    def initialize(id:, name:)
       @id = id
+      @name = name
     end
 
     def ==(other)
@@ -22,9 +23,9 @@ class RelationTest < Minitest::Test
   class TestObject < EmptyObject
     def self.load
       [
-        new(id: 1),
-        new(id: 2),
-        new(id: 3)
+        new(id: 1, name: :foo),
+        new(id: 2, name: :bar),
+        new(id: 3, name: :baz)
       ]
     end
   end
@@ -67,8 +68,9 @@ class RelationTest < Minitest::Test
     assert { @relation.where(id: 1).is_a? ActiveAny::Relation }
     assert { @relation.where(id: 1).to_a == [TestObject.load.first] }
     assert { @relation.where(id: 3).to_a == [TestObject.load.last] }
+    assert { @relation.where(id: 1).where(id: 3).to_a == [] }
+    assert { @relation.where(id: 1).where(name: :foo).to_a == [TestObject.load.first] }
     # TODO: enable chain clause
-    # assert { @relation.where(id: 1).where(id: 3).to_a == [] }
     # assert { @relation.where.not(id: 1).to_a == TestObject.load[1..2] }
     # assert { @relation.where(id: 1).or(@relation.where(id: 2)).to_a == TestObject.load[0..1] }
   end
