@@ -4,6 +4,7 @@ require 'active_any/version'
 require 'active_any/relation'
 require 'active_any/adapter'
 require 'active_any/where_clause'
+require 'forwardable'
 
 module ActiveAny
   def self.included(klass)
@@ -11,6 +12,10 @@ module ActiveAny
   end
 
   module ClassMethods
+    extend Forwardable
+
+    def_delegators :all, :find_by, :limit, :where, :take
+
     def all
       Relation.create(self)
     end

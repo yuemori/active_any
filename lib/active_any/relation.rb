@@ -4,6 +4,11 @@ module ActiveAny
   class Relation
     attr_reader :loaded
 
+    extend Forwardable
+    include Enumerable
+
+    def_delegators :records, :each
+
     def self.create(klass)
       new(klass)
     end
