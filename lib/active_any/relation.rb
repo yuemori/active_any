@@ -58,6 +58,8 @@ module ActiveAny
 
     private
 
+    attr_accessor :limit_value
+
     def where_clause
       @where_clause ||= WhereClause.new
     end
@@ -88,16 +90,12 @@ module ActiveAny
     end
 
     def load_records
-      records = exec_query
-      records = records.take(@limit_value) if @limit_value
-      @records = records
+      @records = adapter.query(where_clause, limit_value)
       @loaded = true
     end
 
-    def exec_query
-      records = @klass.load
-      adapter = Adapter.new(records)
-      adapter.query(where_clause.conditions)
+    def adapter
+      @adapter ||= Adapter.new(@klass)
     end
   end
 end

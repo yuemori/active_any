@@ -13,8 +13,6 @@ module ActiveAny
       end
     end
 
-    attr_reader :conditions
-
     def initialize
       @conditions = []
     end

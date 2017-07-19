@@ -42,7 +42,13 @@ class RelationTest < Minitest::Test
 
   def test_should_load_object_be_cached
     count = 0
-    TestObject.stub :load, -> { count += 1 } do
+    orig = TestObject.load
+    counter = lambda do
+      count += 1
+      orig
+    end
+
+    TestObject.stub :load, counter do
       2.times { @relation.to_a }
     end
 
