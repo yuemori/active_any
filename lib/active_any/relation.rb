@@ -65,7 +65,7 @@ module ActiveAny
     end
 
     def load
-      load_records unless loaded
+      exec_query unless loaded
       self
     end
 
@@ -89,13 +89,9 @@ module ActiveAny
       end
     end
 
-    def load_records
-      @records = adapter.query(where_clause, limit_value)
+    def exec_query
+      @records = @klass.find_by_query(where_clause, limit_value)
       @loaded = true
-    end
-
-    def adapter
-      @adapter ||= Adapter.new(@klass)
     end
   end
 end

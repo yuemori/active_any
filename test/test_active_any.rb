@@ -4,7 +4,7 @@ require 'test_helper'
 
 class ActiveAnyTest < Minitest::Test
   class TestObject
-    include ActiveAny
+    include ActiveAny::Object
   end
 
   def test_that_it_has_a_version_number

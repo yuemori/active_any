@@ -3,88 +3,62 @@
 require 'test_helper'
 
 class RelationTest < Minitest::Test
-  class EmptyObject
-    def self.load
-      []
+  Result = Struct.new(:where_clause, :limit_value)
+
+  class TestObject
+    class << self
+      attr_accessor :call_count
+
+      def find_by_query(where_clause, limit_value)
+        @call_count += 1
+        [Result.new(where_clause.conditions.map(&:to_h), limit_value)]
+      end
     end
 
-    attr_reader :id, :name
-
-    def initialize(id:, name:)
-      @id = id
-      @name = name
-    end
-
-    def ==(other)
-      other.id == id
-    end
-  end
-
-  class TestObject < EmptyObject
-    def self.load
-      [
-        new(id: 1, name: :foo),
-        new(id: 2, name: :bar),
-        new(id: 3, name: :baz)
-      ]
-    end
+    self.call_count = 0
   end
 
   def setup
     @relation = ActiveAny::Relation.new(TestObject)
-    @empty_relation = ActiveAny::Relation.new(EmptyObject)
+  end
+
+  def teardown
+    TestObject.call_count = 0
   end
 
   def test_should_equal_loader_methods_and_load
-    assert { @relation.to_a == TestObject.load }
-    assert { @empty_relation.to_a == [] }
+    assert { @relation.to_a == [Result.new([], nil)] }
   end
 
   def test_should_load_object_be_cached
-    count = 0
-    orig = TestObject.load
-    counter = lambda do
-      count += 1
-      orig
-    end
+    2.times { @relation.to_a }
 
-    TestObject.stub :load, counter do
-      2.times { @relation.to_a }
-    end
-
-    assert { count == 1 }
+    assert { TestObject.call_count == 1 }
   end
 
   def test_take_with_limit
-    assert { @relation.take == TestObject.load.first }
-    assert { @relation.take(2) == TestObject.load.take(2) }
-    assert { @empty_relation.take.nil? }
-    assert { @empty_relation.take(3) == [] }
+    assert { @relation.take == Result.new([], 1) }
+    assert { @relation.take(2) == [Result.new([], 2)] }
   end
 
   def test_limit_value_be_affection_to_result
     assert { @relation.limit(1).is_a? ActiveAny::Relation }
-    assert { @relation.limit(1).to_a == TestObject.load.take(1) }
-    assert { @relation.limit(3).to_a == TestObject.load.take(3) }
-    assert { @empty_relation.limit(1).to_a == [] }
-    assert { @empty_relation.limit(3).to_a == [] }
+    assert { @relation.limit(1).to_a == [Result.new([], 1)] }
+    assert { @relation.limit(3).to_a == [Result.new([], 3)] }
   end
 
   def test_where_with_condition
     assert { @relation.where(id: 1).is_a? ActiveAny::Relation }
-    assert { @relation.where(id: 1).to_a == [TestObject.load.first] }
-    assert { @relation.where(id: 3).to_a == [TestObject.load.last] }
-    assert { @relation.where(id: 1).where(id: 3).to_a == [] }
-    assert { @relation.where(id: 1).where(name: :foo).to_a == [TestObject.load.first] }
-    # TODO: enable chain clause
-    # assert { @relation.where.not(id: 1).to_a == TestObject.load[1..2] }
-    # assert { @relation.where(id: 1).or(@relation.where(id: 2)).to_a == TestObject.load[0..1] }
+    assert { @relation.where(id: 1).to_a == [Result.new([{ id: 1 }], nil)] }
+    assert { @relation.where(id: 3).to_a == [Result.new([{ id: 3 }], nil)] }
+    assert { @relation.where(id: 1).where(id: 3).to_a == [Result.new([{ id: 1 }, { id: 3 }], nil)] }
+    assert { @relation.where(id: 1).where(name: :foo).to_a == [Result.new([{ id: 1 }, { name: :foo }], nil)] }
+    assert { @relation.where(id: 1, name: :foo).to_a == [Result.new([{ id: 1 }, { name: :foo }], nil)] }
   end
 
   def test_find_by_with_condition
-    assert { @relation.find_by(id: 1).is_a? TestObject }
-    assert { @relation.find_by(id: 1) == TestObject.load.first }
-    assert { @relation.find_by(id: 3) == TestObject.load.last }
-    assert { @empty_relation.find_by(id: 1).nil? }
+    assert { @relation.find_by(id: 1) == Result.new([{ id: 1 }], 1) }
+    assert { @relation.find_by(id: 3) == Result.new([{ id: 3 }], 1) }
+    assert { @relation.find_by(id: 3, name: :foo) == Result.new([{ id: 3 }, { name: :foo }], 1) }
   end
 end

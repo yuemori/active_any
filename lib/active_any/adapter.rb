@@ -6,16 +6,8 @@ module ActiveAny
       @klass = klass
     end
 
-    def query(where_clause, limit_value)
-      records = @klass.load
-
-      records = records.select do |record|
-        where_clause.all? do |condition|
-          condition.match?(record)
-        end
-      end
-
-      limit_value ? records.take(limit_value) : records
+    def query(_where_clause, _limit_value)
+      raise NotImplementedError
     end
   end
 end
