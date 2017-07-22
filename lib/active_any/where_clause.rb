@@ -8,10 +8,33 @@ module ActiveAny
       def initialize(key, value)
         @key = key
         @value = value
+
+        register_handler(BasicObject, :base_handler)
+        register_handler(Regexp, :regexp_handler)
+        register_handler(Range, :range_handler)
+        register_handler(Array, :array_handler)
+      end
+
+      def evaluate(adapter, record)
+        adapter.public_send(handle_for(value), record, key, value)
       end
 
       def to_h
         { key => value }
+      end
+
+      private
+
+      def handle_for(value)
+        handlers.select { |klass, _| value.is_a?(klass) }.last.last
+      end
+
+      def handlers
+        @handlers ||= []
+      end
+
+      def register_handler(klass, method)
+        handlers << [klass, method]
       end
     end
 

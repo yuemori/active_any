@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
 module ActiveAny
-  class ObjectAdapter < Adapter
-    def query(where_clause, limit_value = nil)
-      records = @klass.data
+  class ObjectAdapter < BasicAdapter
+    def base_handler(record, key, value)
+      record.send(key) == value
+    end
 
-      records = records.select do |record|
-        where_clause.all? do |condition|
-          record.send(condition.key) == condition.value
-        end
-      end
+    def regexp_handler(record, key, regexp)
+      regexp.match? record.send(key)
+    end
 
-      limit_value ? records.take(limit_value) : records
+    def range_handler(record, key, range)
+      range.include? record.send(key)
+    end
+
+    def array_handler(record, key, array)
+      array.include? record.send(key)
     end
   end
 end

@@ -3,6 +3,8 @@
 require 'active_any/version'
 require 'active_any/relation'
 require 'active_any/adapter'
+require 'active_any/adapters/abstract_adapter'
+require 'active_any/adapters/basic_adapter'
 require 'active_any/adapters/object_adapter'
 require 'active_any/adapters/hash_adapter'
 require 'active_any/where_clause'
