@@ -17,5 +17,13 @@ module ActiveAny
     def array_handler(record, key, array)
       array.include? record.send(key)
     end
+
+    def group_handler(records, group_values)
+      return records if group_values.empty?
+
+      records.uniq do |record|
+        group_values.map { |method| record.send(method) }
+      end
+    end
   end
 end

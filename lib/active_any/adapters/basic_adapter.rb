@@ -2,7 +2,7 @@
 
 module ActiveAny
   class BasicAdapter < AbstractAdapter
-    def query(where_clause, limit_value = nil)
+    def query(where_clause, limit_value = nil, group_clause = [])
       records = @klass.data
 
       records = records.select do |record|
@@ -11,6 +11,7 @@ module ActiveAny
         end
       end
 
+      records = group_handler(records, group_clause) if group_clause
       limit_value ? records.take(limit_value) : records
     end
   end

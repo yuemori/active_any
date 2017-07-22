@@ -17,6 +17,7 @@ module ActiveAny
       @klass = klass
       @records = []
       @loaded = false
+      @group_values ||= []
     end
 
     def to_a
@@ -39,15 +40,28 @@ module ActiveAny
       limit ? find_take_with_limit(limit) : find_take
     end
 
+    def group(*args)
+      spawn.group!(*args)
+    end
+
     protected
 
+    attr_accessor :limit_value, :group_values
+
     def limit!(value)
-      @limit_value = value
+      self.limit_value = value
       self
     end
 
     def where!(condition)
       where_clause.merge!(condition)
+      self
+    end
+
+    def group!(*args)
+      args.flatten!
+
+      self.group_values += args
       self
     end
 
@@ -57,8 +71,6 @@ module ActiveAny
     end
 
     private
-
-    attr_accessor :limit_value
 
     def where_clause
       @where_clause ||= WhereClause.new
@@ -90,7 +102,7 @@ module ActiveAny
     end
 
     def exec_query
-      @records = @klass.find_by_query(where_clause, limit_value)
+      @records = @klass.find_by_query(where_clause, limit_value, group_values)
       @loaded = true
     end
   end
