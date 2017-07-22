@@ -5,8 +5,8 @@ require 'bundler/setup'
 require 'active_any'
 require 'pry'
 
-class Person
-  include ActiveAny
+class PersonObject
+  include ActiveAny::Object
 
   attr_reader :name, :age
 
@@ -15,7 +15,7 @@ class Person
     @age = age
   end
 
-  def self.load
+  def self.data
     [
       new(name: 'alice',   age: 20),
       new(name: 'bob',     age: 20),
@@ -29,6 +29,27 @@ class Person
       new(name: 'alice',   age: 50),
       new(name: 'bob',     age: 50),
       new(name: 'charlie', age: 50)
+    ]
+  end
+end
+
+class PersonHash
+  include ActiveAny::Hash
+
+  def self.data
+    [
+      { name: 'alice',   age: 20 },
+      { name: 'bob',     age: 20 },
+      { name: 'charlie', age: 20 },
+      { name: 'alice',   age: 30 },
+      { name: 'bob',     age: 30 },
+      { name: 'charlie', age: 30 },
+      { name: 'alice',   age: 40 },
+      { name: 'bob',     age: 40 },
+      { name: 'charlie', age: 40 },
+      { name: 'alice',   age: 50 },
+      { name: 'bob',     age: 50 },
+      { name: 'charlie', age: 50 }
     ]
   end
 end

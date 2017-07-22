@@ -10,10 +10,6 @@ module ActiveAny
         @value = value
       end
 
-      def match?(record)
-        record.send(@key) == @value
-      end
-
       def to_h
         { key => value }
       end
