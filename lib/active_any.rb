@@ -8,7 +8,7 @@ require 'active_any/relation'
 require 'active_any/reflection'
 require 'active_any/associations'
 require 'active_any/association_relation'
-require 'active_any/assign_attribute'
+require 'active_any/attribute_assignment'
 require 'active_any/finders'
 require 'active_any/core'
 require 'active_any/adapter'
@@ -19,7 +19,6 @@ module ActiveAny
   class Base
     include Core
     include Associations
-    include AttributeAssignment
     include Finders
     include Reflection
   end
@@ -39,6 +38,8 @@ module ActiveAny
   end
 
   class Hash < Base
+    include AttributeAssignment
+
     def self.inherited(child)
       child.abstract_class = false
     end

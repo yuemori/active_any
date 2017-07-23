@@ -26,7 +26,7 @@ module ActiveAny
 
     private
 
-    def init_internals
+    def init_internals(*)
       @association_cache = {}
       super
     end

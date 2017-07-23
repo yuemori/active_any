@@ -15,13 +15,12 @@ module ActiveAny
       delegate :take, :take!, :first, :last, to: :all
     end
 
-    def initialize(data)
-      init_internals
-      assign_attributes(data)
+    def initialize(*args)
+      init_internals(*args)
     end
 
     private
 
-    def init_internals; end
+    def init_internals(*); end
   end
 end
