@@ -61,4 +61,15 @@ module BasicAdapterTest
     assert { @adapter.query(where_clause.new, nil, []) == data }
     assert { @adapter.query(where_clause.new, nil, %i[name]) == [data[0], data[1], data[2]] }
   end
+
+  def order_value
+    Struct.new(:key, :sort_type)
+  end
+
+  def test_query_with_order
+    assert { @adapter.query(where_clause.new, nil, [], []) == data }
+    assert { @adapter.query(where_clause.new, nil, [], [order_value.new(:name, :asc)]) == [data[1], data[2], data[0], data[3]] }
+    assert { @adapter.query(where_clause.new, nil, [], [order_value.new(:name, :desc)]) == [data[0], data[3], data[2], data[1]] }
+    assert { @adapter.query(where_clause.new, nil, [], [order_value.new(:name, :desc), order_value.new(:id, :desc)]) == [data[3], data[0], data[2], data[1]] }
+  end
 end

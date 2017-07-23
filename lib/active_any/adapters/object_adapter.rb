@@ -25,5 +25,16 @@ module ActiveAny
         group_values.map { |method| record.send(method) }
       end
     end
+
+    private
+
+    def build_order_proc(a, b, order_value)
+      case order_value.sort_type
+      when :asc then proc { a.send(order_value.key) <=> b.send(order_value.key) }
+      when :desc then proc { -(a.send(order_value.key) <=> b.send(order_value.key)) }
+      else
+        raise ArgumentError, "#{order_value.sort_type} is not supported"
+      end
+    end
   end
 end

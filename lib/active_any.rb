@@ -25,8 +25,8 @@ module ActiveAny
         Relation.create(self)
       end
 
-      def find_by_query(where_clause, limit_value, group_values)
-        adapter.query(where_clause, limit_value, group_values)
+      def find_by_query(where_clause, limit_value, group_values, order_values)
+        adapter.query(where_clause, limit_value, group_values, order_values)
       end
 
       private
@@ -51,8 +51,8 @@ module ActiveAny
         Relation.create(self)
       end
 
-      def find_by_query(where_clause, limit_value, group_values)
-        adapter.query(where_clause, limit_value, group_values)
+      def find_by_query(where_clause, limit_value, group_values, order_values)
+        adapter.query(where_clause, limit_value, group_values, order_values)
       end
 
       private

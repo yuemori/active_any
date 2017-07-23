@@ -12,7 +12,10 @@ Style/Documentation:
 
 Metrics/LineLength:
   Max: 128
+  Exclude:
+    - test/**/*
 
 Metrics/AbcSize:
+  Max: 18
   Exclude:
     - test/**/*

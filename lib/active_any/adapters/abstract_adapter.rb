@@ -8,12 +8,20 @@ module ActiveAny
       end
     end
 
-    def query(_where_clause, _limit_value = nil, _group_values = [])
+    def query(_where_clause, _limit_value = nil, _group_values = [], _order_values = [])
       raise NotImplementedError.new, "#{self.class.name} can not handle for #{value.class}"
     end
 
-    def group_handler(_records, _grouping_key)
+    def limit_handler(_records, _limit_value)
+      raise NotImplementedError.new, "#{self.class.name} can not handle for limit"
+    end
+
+    def group_handler(_records, _group_values)
       raise NotImplementedError.new, "#{self.class.name} can not handle for group"
+    end
+
+    def order_handler(_records, _order_values)
+      raise NotImplementedError.new, "#{self.class.name} can not handle for order"
     end
   end
 end

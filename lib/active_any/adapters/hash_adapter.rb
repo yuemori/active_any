@@ -25,5 +25,16 @@ module ActiveAny
         group_values.map { |key| record[key] }
       end
     end
+
+    private
+
+    def build_order_proc(a, b, order_value)
+      case order_value.sort_type
+      when :asc then proc { a[order_value.key] <=> b[order_value.key] }
+      when :desc then proc { -(a[order_value.key] <=> b[order_value.key]) }
+      else
+        raise ArgumentError, "#{order_value.sort_type} is not supported"
+      end
+    end
   end
 end

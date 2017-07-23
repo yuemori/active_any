@@ -18,6 +18,7 @@ module ActiveAny
       @records = []
       @loaded = false
       @group_values ||= []
+      @order_values ||= []
     end
 
     def to_a
@@ -44,9 +45,13 @@ module ActiveAny
       spawn.group!(*args)
     end
 
+    def order(*args)
+      spawn.order!(*args)
+    end
+
     protected
 
-    attr_accessor :limit_value, :group_values
+    attr_accessor :limit_value, :group_values, :order_values
 
     def limit!(value)
       self.limit_value = value
@@ -65,12 +70,32 @@ module ActiveAny
       self
     end
 
+    def order!(*args)
+      args.flatten!
+
+      self.order_values += convert_order_values(args)
+      self
+    end
+
     def records
       load
       @records
     end
 
     private
+
+    OrderValue = Struct.new(:key, :sort_type)
+
+    def convert_order_values(values)
+      values.map do |arg|
+        case arg
+        when ::Hash then OrderValue.new(arg.keys.first, arg.values.first)
+        when ::Symbol, ::String then OrderValue.new(arg, :asc)
+        else
+          raise ArgumentError
+        end
+      end
+    end
 
     def where_clause
       @where_clause ||= WhereClause.new
@@ -102,7 +127,7 @@ module ActiveAny
     end
 
     def exec_query
-      @records = @klass.find_by_query(where_clause, limit_value, group_values)
+      @records = @klass.find_by_query(where_clause, limit_value, group_values, order_values)
       @loaded = true
     end
   end
