@@ -19,6 +19,7 @@ module ActiveAny
   class Base
     include Core
     include Associations
+    include AttributeAssignment
     include Finders
     include Reflection
   end
@@ -38,8 +39,6 @@ module ActiveAny
   end
 
   class Hash < Base
-    include AttributeAssignment
-
     def self.inherited(child)
       child.abstract_class = false
     end
