@@ -78,7 +78,7 @@ module ActiveAny
     end
 
     def records
-      load
+      load_unless_loaded
       @records
     end
 
@@ -101,7 +101,7 @@ module ActiveAny
       @where_clause ||= WhereClause.new
     end
 
-    def load
+    def load_unless_loaded
       exec_query unless loaded
       self
     end
