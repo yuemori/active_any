@@ -29,4 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard-rubocop"
   spec.add_development_dependency "rubocop"
   spec.add_development_dependency "pry-byebug"
+  spec.add_development_dependency "pry-coolline"
+  spec.add_development_dependency "pry-inline"
+  spec.add_development_dependency "pry-state"
 end

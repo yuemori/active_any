@@ -4,6 +4,7 @@
 require 'bundler/setup'
 require 'active_any'
 require 'pry'
+require 'pry-coolline'
 require_relative '../test/data'
 
 include TestData
