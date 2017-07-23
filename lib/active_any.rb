@@ -1,32 +1,20 @@
 # frozen_string_literal: true
 
+require 'active_support'
+require 'active_support/core_ext'
+require 'forwardable'
+
 require 'active_any/version'
 require 'active_any/relation'
+require 'active_any/finders'
 require 'active_any/adapter'
 require 'active_any/adapters/abstract_adapter'
 require 'active_any/adapters/object_adapter'
 require 'active_any/where_clause'
-require 'forwardable'
 
 module ActiveAny
   class Abstract
-    class << self
-      extend Forwardable
-
-      def_delegators :all, :find_by, :limit, :where, :take
-
-      def all
-        Relation.create(self)
-      end
-
-      def find_by_query(where_clause, limit_value, group_values, order_values)
-        adapter.query(where_clause, limit_value, group_values, order_values)
-      end
-
-      def adapter
-        raise NotImplementedError
-      end
-    end
+    include Finders
   end
 
   class Object < Abstract
