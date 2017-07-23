@@ -4,19 +4,13 @@ require 'active_any/version'
 require 'active_any/relation'
 require 'active_any/adapter'
 require 'active_any/adapters/abstract_adapter'
-require 'active_any/adapters/basic_adapter'
 require 'active_any/adapters/object_adapter'
-require 'active_any/adapters/hash_adapter'
 require 'active_any/where_clause'
 require 'forwardable'
 
 module ActiveAny
-  module Object
-    def self.included(klass)
-      klass.extend ClassMethods
-    end
-
-    module ClassMethods
+  class Abstract
+    class << self
       extend Forwardable
 
       def_delegators :all, :find_by, :limit, :where, :take
@@ -29,7 +23,15 @@ module ActiveAny
         adapter.query(where_clause, limit_value, group_values, order_values)
       end
 
-      private
+      def adapter
+        raise NotImplementedError
+      end
+    end
+  end
+
+  class Object < Abstract
+    class << self
+      attr_accessor :data
 
       def adapter
         @adapter ||= ObjectAdapter.new(self)
@@ -37,28 +39,26 @@ module ActiveAny
     end
   end
 
-  module Hash
-    def self.included(klass)
-      klass.extend ClassMethods
+  class Hash < Abstract
+    def initialize(data)
+      data.each do |key, value|
+        public_send("#{key}=", value)
+      end
     end
 
-    module ClassMethods
-      extend Forwardable
+    class << self
+      attr_reader :data
 
-      def_delegators :all, :find_by, :limit, :where, :take
+      def data=(data)
+        data.map(&:keys).flatten.each do |method|
+          attr_accessor method
+        end
 
-      def all
-        Relation.create(self)
+        @data = data.map { |d| new(d) }
       end
-
-      def find_by_query(where_clause, limit_value, group_values, order_values)
-        adapter.query(where_clause, limit_value, group_values, order_values)
-      end
-
-      private
 
       def adapter
-        @adapter ||= HashAdapter.new(self)
+        @adapter ||= ObjectAdapter.new(self)
       end
     end
   end

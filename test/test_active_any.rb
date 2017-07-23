@@ -1,38 +1,10 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'data'
 
 class ActiveAnyTest < Minitest::Test
-  class PersonObject
-    include ActiveAny::Object
-
-    attr_reader :name, :age
-
-    def initialize(name:, age:)
-      @name = name
-      @age = age
-    end
-
-    def self.data
-      [
-        new(name: 'alice',   age: 20),
-        new(name: 'bob',     age: 20),
-        new(name: 'charlie', age: 20)
-      ]
-    end
-  end
-
-  class PersonHash
-    include ActiveAny::Hash
-
-    def self.data
-      [
-        { name: 'alice',   age: 20 },
-        { name: 'bob',     age: 20 },
-        { name: 'charlie', age: 20 }
-      ]
-    end
-  end
+  include TestData
 
   def test_that_it_has_a_version_number
     assert { !::ActiveAny::VERSION.nil? }
