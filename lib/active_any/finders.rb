@@ -11,8 +11,13 @@ module ActiveAny
         Relation.create(self)
       end
 
-      def find_by_query(where_clause, limit_value, group_values, order_values)
-        adapter.query(where_clause, limit_value, group_values, order_values)
+      def find_by_query(where_clause:, limit_value:, group_values:, order_clause:)
+        adapter.query(
+          where_clause: where_clause,
+          limit_value: limit_value,
+          group_values: group_values,
+          order_clause: order_clause
+        )
       end
 
       def adapter

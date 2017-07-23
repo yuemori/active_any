@@ -11,9 +11,9 @@ class ActiveAnyTest < Minitest::Test
   end
 
   def test_all_returns_relation_object
-    assert { PersonObject.all.is_a?(ActiveAny::Relation) }
-    assert { PersonHash.all.is_a?(ActiveAny::Relation) }
-    assert { PersonObject.all.to_a.is_a?(Array) }
-    assert { PersonHash.all.to_a.is_a?(Array) }
+    assert { UserObject.all.is_a?(ActiveAny::Relation) }
+    assert { UserHash.all.is_a?(ActiveAny::Relation) }
+    assert { UserObject.all.to_a.is_a?(Array) }
+    assert { UserHash.all.to_a.is_a?(Array) }
   end
 end

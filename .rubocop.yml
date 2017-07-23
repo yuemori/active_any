@@ -10,10 +10,16 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Style/PredicateName:
+  Enabled: false
+
 Metrics/LineLength:
-  Max: 128
+  Max: 150
   Exclude:
     - test/**/*
+
+Style/GuardClause:
+  Enabled: false
 
 Metrics/AbcSize:
   Max: 18

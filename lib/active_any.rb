@@ -2,22 +2,33 @@
 
 require 'active_support'
 require 'active_support/core_ext'
-require 'forwardable'
 
 require 'active_any/version'
 require 'active_any/relation'
+require 'active_any/reflection'
+require 'active_any/associations'
+require 'active_any/association_relation'
+require 'active_any/assign_attribute'
 require 'active_any/finders'
+require 'active_any/core'
 require 'active_any/adapter'
 require 'active_any/adapters/abstract_adapter'
 require 'active_any/adapters/object_adapter'
-require 'active_any/where_clause'
 
 module ActiveAny
-  class Abstract
+  class Base
+    include Core
+    include Associations
+    include AttributeAssignment
     include Finders
+    include Reflection
   end
 
-  class Object < Abstract
+  class Object < Base
+    def self.inherited(child)
+      child.abstract_class = false
+    end
+
     class << self
       attr_accessor :data
 
@@ -27,11 +38,9 @@ module ActiveAny
     end
   end
 
-  class Hash < Abstract
-    def initialize(data)
-      data.each do |key, value|
-        public_send("#{key}=", value)
-      end
+  class Hash < Base
+    def self.inherited(child)
+      child.abstract_class = false
     end
 
     class << self

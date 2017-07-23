@@ -1,24 +1,60 @@
 # frozen_string_literal: true
 
-module ActiveAny
-  class Relation
-    attr_reader :loaded
+require 'active_any/relation/merger'
+require 'active_any/relation/where_clause'
+require 'active_any/relation/order_clause'
 
-    extend Forwardable
+module ActiveAny
+  class Relation # rubocop:disable Metrics/ClassLength
+    attr_reader :loaded, :klass
+
+    delegate :each, to: :records
+
     include Enumerable
 
-    def_delegators :records, :each
+    class ImmutableRelation < StandardError; end
 
-    def self.create(klass)
-      new(klass)
+    MULTI_VALUE_METHODS  = %i[group].freeze
+    SINGLE_VALUE_METHODS = %i[limit].freeze
+    CLAUSE_METHODS = %i[where order].freeze
+    VALUE_METHODS = (MULTI_VALUE_METHODS + SINGLE_VALUE_METHODS + CLAUSE_METHODS).freeze
+
+    Relation::VALUE_METHODS.each do |name|
+      method_name = \
+        case name
+        when *Relation::MULTI_VALUE_METHODS then "#{name}_values"
+        when *Relation::SINGLE_VALUE_METHODS then "#{name}_value"
+        when *Relation::CLAUSE_METHODS then "#{name}_clause"
+        end
+      class_eval <<-CODE, __FILE__, __LINE__ + 1
+        def #{method_name}                   # def includes_values
+          get_value(#{name.inspect})         #   get_value(:includes)
+        end                                  # end
+
+        def #{method_name}=(value)           # def includes_values=(value)
+          set_value(#{name.inspect}, value)  #   set_value(:includes, value)
+        end                                  # end
+      CODE
+    end
+
+    def self.create(klass, *args)
+      new(klass, *args)
     end
 
     def initialize(klass)
       @klass = klass
       @records = []
       @loaded = false
-      @group_values ||= []
-      @order_values ||= []
+      @values = {}
+    end
+
+    def get_value(name)
+      @values[name] || default_value_for(name)
+    end
+
+    def set_value(name, value)
+      assert_mutability!
+      @values[name] = value
     end
 
     def to_a
@@ -41,6 +77,36 @@ module ActiveAny
       limit ? find_take_with_limit(limit) : find_take
     end
 
+    def first(limit = nil)
+      if loaded
+        limit ? records.first(limit) : records.first
+      else
+        limit ? spawn.records.first(limit) : spawn.records.first
+      end
+    end
+
+    def last(limit = nil)
+      return find_last(limit) if loaded? || limit_value
+
+      result = limit(limit)
+      result.order!(klass.primary_key) if order_clause.empty? && klass.primary_key
+      result = result.reverse_order!
+      limit ? result.reverse : result.first
+    end
+
+    def reverse_order
+      spawn.reverse_order!
+    end
+
+    def reverse_order!
+      self.order_clause = order_clause.reverse!
+      self
+    end
+
+    def find_last(limit)
+      limit ? records.last(limit) : records.last
+    end
+
     def group(*args)
       spawn.group!(*args)
     end
@@ -49,9 +115,27 @@ module ActiveAny
       spawn.order!(*args)
     end
 
-    protected
+    def merge(other)
+      if other.is_a?(Array)
+        records & other
+      elsif other
+        spawn.merge!(other)
+      else
+        raise ArgumentError, "invalid argument: #{other.inspect}."
+      end
+    end
 
-    attr_accessor :limit_value, :group_values, :order_values
+    def merge!(other) # :nodoc:
+      if other.is_a?(Hash)
+        Relation::HashMerger.new(self, other).merge
+      elsif other.is_a?(Relation)
+        Relation::Merger.new(self, other).merge
+      elsif other.respond_to?(:to_proc)
+        instance_exec(&other)
+      else
+        raise ArgumentError, "#{other.inspect} is not an ActiveRecord::Relation"
+      end
+    end
 
     def limit!(value)
       self.limit_value = value
@@ -59,7 +143,7 @@ module ActiveAny
     end
 
     def where!(condition)
-      where_clause.merge!(condition)
+      self.where_clause += WhereClause.new(condition)
       self
     end
 
@@ -73,7 +157,7 @@ module ActiveAny
     def order!(*args)
       args.flatten!
 
-      self.order_values += convert_order_values(args)
+      self.order_clause += OrderClause.new(args)
       self
     end
 
@@ -82,24 +166,27 @@ module ActiveAny
       @records
     end
 
+    def initialize_copy(*)
+      @values = @values.dup
+      reset
+      super
+    end
+
+    def values
+      @values.dup
+    end
+
+    def reset
+      @loaded = nil
+      @records = [].freeze
+      self
+    end
+
+    def loaded?
+      @loaded
+    end
+
     private
-
-    OrderValue = Struct.new(:key, :sort_type)
-
-    def convert_order_values(values)
-      values.map do |arg|
-        case arg
-        when ::Hash then OrderValue.new(arg.keys.first, arg.values.first)
-        when ::Symbol, ::String then OrderValue.new(arg, :asc)
-        else
-          raise ArgumentError
-        end
-      end
-    end
-
-    def where_clause
-      @where_clause ||= WhereClause.new
-    end
 
     def load_unless_loaded
       exec_query unless loaded
@@ -127,8 +214,30 @@ module ActiveAny
     end
 
     def exec_query
-      @records = @klass.find_by_query(where_clause, limit_value, group_values, order_values)
+      @records = klass.find_by_query(
+        where_clause: where_clause,
+        limit_value: limit_value,
+        group_values: group_values,
+        order_clause: order_clause
+      )
       @loaded = true
+    end
+
+    def assert_mutability!
+      raise ImmutableRelation if @loaded
+    end
+
+    FROZEN_EMPTY_ARRAY = [].freeze
+
+    def default_value_for(name)
+      case name
+      when :where then WhereClause.empty
+      when :order then OrderClause.empty
+      when *Relation::MULTI_VALUE_METHODS then FROZEN_EMPTY_ARRAY
+      when *Relation::SINGLE_VALUE_METHODS then nil
+      else
+        raise ArgumentError, "unknown relation value #{name.inspect}"
+      end
     end
   end
 end
