@@ -48,8 +48,8 @@ end
 
 User.all                  #=> Relation
 User.all.to_a             #=> Array of User
-User.where(name: 'alice') #=> WHERE name equals alice
-User.where(name: /li/)    #=> WHERE name LIKE li (alice, charlie)
+User.where(name: 'alice') #=> WHERE name = alice
+User.where(name: /li/)    #=> WHERE name LIKE %li% (alice, charlie)
 User.group(:name)         #=> GROUP BY name
 User.order(:age)          #=> ORDER BY age
 User.order(age: :desc)    #=> ORDER BY age DESC
