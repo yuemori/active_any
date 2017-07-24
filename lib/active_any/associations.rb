@@ -2,7 +2,9 @@
 
 require 'active_any/associations/collection_proxy'
 require 'active_any/associations/association_scope'
+require 'active_any/associations/builder/association'
 require 'active_any/associations/builder/has_many'
+require 'active_any/associations/association'
 require 'active_any/associations/has_many_association'
 
 module ActiveAny

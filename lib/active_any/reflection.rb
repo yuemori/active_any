@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'active_any/reflections/has_many_reflection'
+require 'active_any/reflection/association_reflection'
+require 'active_any/reflection/has_many_reflection'
 
 module ActiveAny
   module Reflection
@@ -9,6 +10,21 @@ module ActiveAny
     included do
       class_attribute :reflections, instance_writer: false
       self.reflections = {}
+    end
+
+    class UnknownPrimaryKey < StandardError
+      attr_reader :model
+
+      def initialize(model = nil, description = nil)
+        if model
+          message = "Unknown primary key for table #{model.table_name} in model #{model}."
+          message += "\n#{description}" if description
+          @model = model
+          super(message)
+        else
+          super('Unknown primary key.')
+        end
+      end
     end
 
     def self.create(macro, name, scope, options, klass)

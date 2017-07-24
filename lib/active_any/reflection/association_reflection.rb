@@ -2,23 +2,8 @@
 
 module ActiveAny
   module Reflection
-    class HasManyReflection
+    class AssociationReflection
       attr_reader :name, :scope, :options, :record_class
-
-      class UnknownPrimaryKey < StandardError
-        attr_reader :model
-
-        def initialize(model = nil, description = nil)
-          if model
-            message = "Unknown primary key for table #{model.table_name} in model #{model}."
-            message += "\n#{description}" if description
-            @model = model
-            super(message)
-          else
-            super('Unknown primary key.')
-          end
-        end
-      end
 
       def initialize(name, scope, options, record_class)
         @name = name
@@ -28,7 +13,11 @@ module ActiveAny
       end
 
       def association_class
-        Associations::HasManyAssociation
+        raise NotImplementedError
+      end
+
+      def marco
+        raise NotImplementedError
       end
 
       def class_name
@@ -44,7 +33,7 @@ module ActiveAny
       end
 
       def collection?
-        true
+        false
       end
 
       def belongs_to?
