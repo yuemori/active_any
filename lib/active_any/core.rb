@@ -15,8 +15,28 @@ module ActiveAny
       delegate :take, :take!, :first, :last, to: :all
     end
 
+    module ClassMethods
+      def unscoped
+        # TODO: implement
+        all
+      end
+
+      def default_scoped
+        # TODO: implement
+        all
+      end
+    end
+
     def initialize(*args)
       init_internals(*args)
+    end
+
+    def [](key)
+      send(key)
+    end
+
+    def has_attribute?(attribute)
+      self.class.instance_methods.include?(attribute.to_s)
     end
 
     private

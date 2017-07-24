@@ -54,7 +54,72 @@ module ActiveAny
         @primary_key ||= options[:primary_key] || primary_key_for_record_class
       end
 
+      def scope_for(klass)
+        scope ? klass.unscoped.instance_exec(nil, &scope) : klass.unscoped
+      end
+
+      def check_preloadable!
+        return unless scope
+
+        if scope.arity.positive?
+          raise ArgumentError, <<-MSG.squish
+            The association scope '#{name}' is instance dependent (the scope
+            block takes an argument). Preloading instance dependent scopes is
+            not supported.
+          MSG
+        end
+      end
+      alias check_eager_loadable! check_preloadable!
+
+      def inverse_of
+        return unless inverse_name
+
+        @inverse_of ||= klass._reflect_on_association inverse_name
+      end
+
       private
+
+      def inverse_name
+        options.fetch(:inverse_of) do
+          @automatic_inverse_of ||= automatic_inverse_of
+        end
+      end
+
+      def automatic_inverse_of
+        if can_find_inverse_of_automatically?(self)
+          inverse_name = ActiveSupport::Inflector.underscore(options[:as] || active_record.name.demodulize).to_sym
+
+          begin
+            reflection = klass._reflect_on_association(inverse_name)
+          rescue NameError
+            # Give up: we couldn't compute the klass type so we won't be able
+            # to find any associations either.
+            reflection = false
+          end
+
+          if valid_inverse_reflection?(reflection)
+            return inverse_name
+          end
+        end
+
+        false
+      end
+
+      VALID_AUTOMATIC_INVERSE_MACROS = %i[has_many has_one belongs_to].freeze
+      INVALID_AUTOMATIC_INVERSE_OPTIONS = %i[foreign_key].freeze
+
+      def can_find_inverse_of_automatically?(reflection)
+        reflection.options[:inverse_of] != false &&
+          VALID_AUTOMATIC_INVERSE_MACROS.include?(reflection.macro) &&
+          INVALID_AUTOMATIC_INVERSE_OPTIONS.none? { |opt| reflection.options[opt] } &&
+          !reflection.scope
+      end
+
+      def valid_inverse_reflection?(reflection)
+        reflection &&
+          klass.name == reflection.record_class.name &&
+          can_find_inverse_of_automatically?(reflection)
+      end
 
       def join_pk
         raise NotImplementedError

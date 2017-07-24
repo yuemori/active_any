@@ -15,6 +15,11 @@ module ActiveAny
         raise NotImplementedError.new, 'writer is unimplemented'
       end
 
+      def reset
+        super
+        @target = []
+      end
+
       def size
         if !find_target? || loaded?
           target.size

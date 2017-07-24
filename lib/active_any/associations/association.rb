@@ -3,7 +3,7 @@
 module ActiveAny
   module Associations
     class Association
-      attr_reader :loaded, :reflection, :target, :owner
+      attr_reader :loaded, :reflection, :target, :owner, :inversed
 
       def initialize(owner, reflection)
         @owner = owner
@@ -61,6 +61,7 @@ module ActiveAny
       def reset
         @loaded = false
         @stale_target = nil
+        @inversed = false
       end
 
       def reset_scope
@@ -81,6 +82,7 @@ module ActiveAny
 
       def loaded!
         @loaded = true
+        @inversed = false
       end
 
       def target=(target)
@@ -88,10 +90,31 @@ module ActiveAny
         loaded!
       end
 
+      def set_inverse_instance(record)
+        if invertible_for?(record)
+          inverse = record.association(inverse_reflection_for(record).name)
+          inverse.target = owner
+          inverse.inversed = true
+        end
+        record
+      end
+
       private
+
+      def invertible_for?(record)
+        foreign_key_for?(record) && inverse_reflection_for(record)
+      end
+
+      def foreign_key_for?(record)
+        record.has_attribute?(reflection.foreign_key)
+      end
 
       def find_target?
         !loaded? && klass
+      end
+
+      def inverse_reflection_for(_record)
+        reflection.inverse_of
       end
     end
   end

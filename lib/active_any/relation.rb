@@ -14,7 +14,7 @@ module ActiveAny
 
     class ImmutableRelation < StandardError; end
 
-    MULTI_VALUE_METHODS  = %i[group].freeze
+    MULTI_VALUE_METHODS  = %i[group includes join].freeze
     SINGLE_VALUE_METHODS = %i[limit].freeze
     CLAUSE_METHODS = %i[where order].freeze
     VALUE_METHODS = (MULTI_VALUE_METHODS + SINGLE_VALUE_METHODS + CLAUSE_METHODS).freeze
@@ -162,7 +162,7 @@ module ActiveAny
     end
 
     def records
-      load_unless_loaded
+      load
       @records
     end
 
@@ -170,6 +170,18 @@ module ActiveAny
       @values = @values.dup
       reset
       super
+    end
+
+    def includes(*args)
+      spawn.includes!(*args)
+    end
+
+    def includes!(*args)
+      args.reject!(&:blank?)
+      args.flatten!
+
+      self.includes_values |= args
+      self
     end
 
     def values
@@ -186,12 +198,12 @@ module ActiveAny
       @loaded
     end
 
-    private
-
-    def load_unless_loaded
+    def load
       exec_query unless loaded
       self
     end
+
+    private
 
     def spawn
       clone
@@ -225,8 +237,29 @@ module ActiveAny
     def exec_query
       ActiveSupport::Notifications.instrument('exec_query.active_any', clauses: clauses, class_name: klass.name) do
         @records = klass.find_by_query(clauses)
+        preload_records(@records)
         @loaded = true
       end
+    end
+
+    def eager_loading?
+      false
+    end
+
+    def preload_records(records)
+      # TODO: implement preload
+      # preload = preload_values
+      preload = []
+      preload += includes_values unless eager_loading?
+      preloader = nil
+      preload.each do |associations|
+        preloader ||= build_preloader
+        preloader.preload records, associations
+      end
+    end
+
+    def build_preloader
+      ActiveAny::Associations::Preloader.new
     end
 
     def assert_mutability!
