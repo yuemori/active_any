@@ -34,6 +34,10 @@ module ActiveAny
           false
         end
       end
+
+      def find_target
+        scope.to_a
+      end
     end
   end
 end

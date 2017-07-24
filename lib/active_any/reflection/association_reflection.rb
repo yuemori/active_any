@@ -43,7 +43,7 @@ module ActiveAny
       JoinKeys = Struct.new(:key, :foreign_key)
 
       def join_keys
-        JoinKeys.new(foreign_key, primary_key)
+        JoinKeys.new(join_pk, join_fk)
       end
 
       def foreign_key
@@ -55,6 +55,14 @@ module ActiveAny
       end
 
       private
+
+      def join_pk
+        raise NotImplementedError
+      end
+
+      def join_fk
+        raise NotImplementedError
+      end
 
       def primary_key_for_record_class
         klass.primary_key || (raise UnknownPrimaryKey.new, klass)

@@ -72,7 +72,7 @@ module ActiveAny
       end
 
       def find_target
-        scope.to_a
+        raise NotImplementedError
       end
 
       def loaded!

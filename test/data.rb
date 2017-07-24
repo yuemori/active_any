@@ -4,6 +4,8 @@ module TestData
   class UserObject < ActiveAny::Object
     attr_accessor :id, :name, :age
 
+    self.primary_key = :id
+
     self.data = [
       new(id: 1, name: 'alice',   age: 20),
       new(id: 2, name: 'bob',     age: 20),
@@ -38,6 +40,8 @@ module TestData
       { id: 11, user_object_id: 1, message: 'hello 11' },
       { id: 12, user_object_id: 1, message: 'hello 12' }
     ]
+
+    belongs_to :user_object
   end
 
   class UserHash < ActiveAny::Hash
