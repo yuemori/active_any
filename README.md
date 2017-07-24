@@ -1,6 +1,8 @@
 # ActiveAny
 
-A utility for quering interface to any objects like ActiveRecord. This gem support for querying, association, enum, and relation.
+A utility for quering interface to any objects like ActiveRecord. This gem support for querying, association and relation.
+
+This gem is not stable version. Be careful.
 
 ## Installation
 
@@ -56,6 +58,18 @@ User.where(name: 'alice').group(:age).order(age: :desc).limit(1).first # Chain
 
 Clone repository and run `bin/console`, if you want to try it!
 (See [test/data.rb](test/data.rb) for defined data on console.)
+
+## Features
+
+- more powerful interface for select query
+  - [] `joins` (interface only)
+  - [] `includes`
+  - [] `having`
+- [] Interface for other than select query (create, destroy, update)
+- [] enum support
+- [] logging
+- [] scoping
+- [] ActiveRecord integration
 
 ## Testing
 
