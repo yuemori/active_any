@@ -5,7 +5,7 @@ module ActiveAny
     extend ActiveSupport::Concern
 
     module ClassMethods
-      delegate :find_by, :limit, :where, :take, to: :all
+      delegate :find_by, :limit, :where, :take, :group, :order, to: :all
 
       def all
         Relation.create(self)
