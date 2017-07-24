@@ -20,13 +20,48 @@ Or install it yourself as:
 
 ## Usage
 
-wait a moment.
+### Getting Started
+
+```ruby
+class User < ActiveAny::Object
+  attr_accessor :id, :name, :age
+
+  self.data = [
+    new(id: 1, name: 'alice',   age: 20),
+    new(id: 2, name: 'bob',     age: 20),
+    new(id: 3, name: 'charlie', age: 20),
+    new(id: 4, name: 'alice',   age: 30),
+    new(id: 5, name: 'bob',     age: 30),
+    new(id: 6, name: 'charlie', age: 30),
+    new(id: 7, name: 'alice',   age: 40),
+    new(id: 8, name: 'bob',     age: 40),
+    new(id: 9, name: 'charlie', age: 40),
+    new(id: 10, name: 'alice',   age: 50),
+    new(id: 11, name: 'bob',     age: 50),
+    new(id: 12, name: 'charlie', age: 50)
+  ]
+end
+
+User.all                  #=> Relation
+User.all.to_a             #=> Array of User
+User.where(name: 'alice') #=> WHERE name equals alice
+User.where(name: /li/)    #=> WHERE name LIKE li (alice, charlie)
+User.group(:name)         #=> GROUP BY name
+User.order(:age)          #=> ORDER BY age
+User.order(age: :desc)    #=> ORDER BY age DESC
+User.limit(5)             #=> LIMIT 5
+
+User.where(name: 'alice').group(:age).order(age: :desc).limit(1).first # Chain
+```
+
+Clone repository and run `bin/console`, if you want to try it!
 
 ## Testing
 
 ```sh
-bundle install
+bin/setup
 bundle exec rake test
+bundle exec rubocop
 ```
 
 ## Contributing
