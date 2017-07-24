@@ -1,5 +1,7 @@
 # ActiveAny
 
+[![Build Status](https://travis-ci.org/yuemori/active_any.svg?branch=master)](https://travis-ci.org/yuemori/active_any)
+
 A utility for quering interface to any objects like ActiveRecord. This gem support for querying, association and relation.
 
 **This gem is not stable version. Be careful.**
