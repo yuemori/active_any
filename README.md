@@ -61,15 +61,26 @@ Clone repository and run `bin/console`, if you want to try it!
 
 ## Features
 
-- more powerful interface for select query
-  - [] `joins` (interface only)
-  - [] `includes`
-  - [] `having`
-- [] Interface for other than select query (create, destroy, update)
-- [] enum support
-- [] logging
-- [] scoping
-- [] ActiveRecord integration
+- More powerful interface for select query
+  - [ ] `joins`      (interface only)
+  - [ ] `preload`    (interface only)
+  - [ ] `eager_load` (interface only)
+  - [ ] `includes`
+  - [ ] `having`
+  - [ ] `offset`
+- Adapters
+  - [ ] API
+  - [ ] YAML
+  - [ ] JSON
+  - [ ] CSV
+- ActiveRecord like interfaces
+  - [ ] Interface for other than select query (create, destroy, update)
+  - [ ] enum support
+  - [ ] logging
+  - [ ] scoping
+- Integration
+  - [ ] ActiveRecord
+  - [ ] ActiveModelSerializers
 
 ## Testing
 
