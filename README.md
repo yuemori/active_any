@@ -55,6 +55,7 @@ User.where(name: 'alice').group(:age).order(age: :desc).limit(1).first # Chain
 ```
 
 Clone repository and run `bin/console`, if you want to try it!
+(See [test/data.rb](test/data.rb) for defined data on console.)
 
 ## Testing
 
