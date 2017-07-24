@@ -2,7 +2,7 @@
 
 A utility for quering interface to any objects like ActiveRecord. This gem support for querying, association and relation.
 
-This gem is not stable version. Be careful.
+**This gem is not stable version. Be careful.**
 
 ## Installation
 
