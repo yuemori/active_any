@@ -213,14 +213,20 @@ module ActiveAny
       end
     end
 
-    def exec_query
-      @records = klass.find_by_query(
+    def clauses
+      {
         where_clause: where_clause,
         limit_value: limit_value,
         group_values: group_values,
         order_clause: order_clause
-      )
-      @loaded = true
+      }
+    end
+
+    def exec_query
+      ActiveSupport::Notifications.instrument('exec_query.active_any', clauses: clauses, class_name: klass.name) do
+        @records = klass.find_by_query(clauses)
+        @loaded = true
+      end
     end
 
     def assert_mutability!
