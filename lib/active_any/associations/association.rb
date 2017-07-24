@@ -71,6 +71,10 @@ module ActiveAny
         @loaded
       end
 
+      def find_from_target?
+        loaded?
+      end
+
       def find_target
         raise NotImplementedError
       end
