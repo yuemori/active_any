@@ -19,6 +19,9 @@ Style/AccessorMethodName:
 Metrics/ClassLength:
   Max: 120
 
+Metrics/MethodLength:
+  Max: 15
+
 Metrics/LineLength:
   Max: 150
   Exclude:

@@ -2,6 +2,7 @@
 
 require 'active_any/relation/finder_methods'
 require 'active_any/relation/query_methods'
+require 'active_any/relation/delegation'
 require 'active_any/relation/merger'
 require 'active_any/relation/where_clause'
 require 'active_any/relation/order_clause'
@@ -15,11 +16,16 @@ module ActiveAny
     include Enumerable
     include FinderMethods
     include QueryMethods
+    include Delegation
 
     class ImmutableRelation < StandardError; end
 
     def self.create(klass, *args)
-      new(klass, *args)
+      relation_class_for(klass).new(klass, *args)
+    end
+
+    def self.relation_class_for(klass)
+      klass.relation_delegate_class(self)
     end
 
     def initialize(klass)
@@ -83,6 +89,13 @@ module ActiveAny
 
     def eager_loading?
       false
+    end
+
+    def scoping
+      # previous, klass.current_scope = klass.current_scope, self
+      yield
+      # ensure
+      # klass.current_scope = previous
     end
 
     def inspect

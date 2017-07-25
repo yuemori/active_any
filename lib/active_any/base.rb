@@ -5,6 +5,8 @@ require 'pathname'
 
 module ActiveAny
   class Base
+    extend Delegation::DelegateCache
+
     include Core
     include Attribute
     include Associations
