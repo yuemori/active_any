@@ -14,7 +14,7 @@ module ActiveAny
       end
     end
 
-    def query(_where_clause, _limit_value = nil, _group_values = [], _order_values = [])
+    def query(*)
       raise NotImplementedError.new, "#{self.class.name} can not handle for #{value.class}"
     end
   end

@@ -3,7 +3,7 @@
 module ActiveAny
   class ObjectAdapter < AbstractAdapter
     def query(where_clause: Relation::WhereClause.empty, order_clause: Relation::OrderClause.empty, limit_value: nil, group_values: [])
-      records = where_handler(@klass.data, where_clause)
+      records = where_handler(klass.data, where_clause)
       records = group_handler(records, group_values)
       records = limit_handler(records, limit_value)
       records = order_handler(records, order_clause)
