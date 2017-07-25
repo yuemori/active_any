@@ -65,8 +65,10 @@ module ActiveAny
         end
       end
 
-      def all?(&block)
-        conditions.all?(&block)
+      include Enumerable
+
+      def each(&block)
+        conditions.each(&block)
       end
     end
   end
