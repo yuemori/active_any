@@ -22,7 +22,7 @@ module ActiveAny
         end
 
         def self.create_reflection(klass, name, scope, options)
-          if scope.is_a?(Hash)
+          if scope.is_a?(::Hash)
             options = scope
             scope   = nil
           end

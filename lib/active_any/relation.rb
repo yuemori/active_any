@@ -44,7 +44,7 @@ module ActiveAny
     end
 
     def merge!(other) # :nodoc:
-      if other.is_a?(Hash)
+      if other.is_a?(::Hash)
         Relation::HashMerger.new(self, other).merge
       elsif other.is_a?(Relation)
         Relation::Merger.new(self, other).merge
