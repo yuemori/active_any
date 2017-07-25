@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_any/associations/preloader'
 require 'active_any/associations/collection_proxy'
 require 'active_any/associations/association_scope'
 require 'active_any/associations/builder/association'
@@ -40,13 +41,6 @@ module ActiveAny
       super
     end
 
-    private
-
-    def init_internals(*)
-      @association_cache = {}
-      super
-    end
-
     def association(name)
       association = association_instance_get(name)
 
@@ -59,6 +53,13 @@ module ActiveAny
       end
 
       association
+    end
+
+    private
+
+    def init_internals(*)
+      @association_cache = {}
+      super
     end
 
     def association_instance_get(name)

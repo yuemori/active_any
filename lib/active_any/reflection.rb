@@ -10,7 +10,9 @@ module ActiveAny
 
     included do
       class_attribute :reflections, instance_writer: false
+      class_attribute :_reflections, instance_writer: false
       self.reflections = {}
+      self._reflections = {}
     end
 
     class UnknownPrimaryKey < StandardError
@@ -44,6 +46,10 @@ module ActiveAny
 
     def self.add_reflection(klass, name, reflection)
       klass.reflections = klass.reflections.merge(name.to_s => reflection)
+    end
+
+    def self._reflect_on_association(association)
+      _reflections[association.to_s]
     end
   end
 end
