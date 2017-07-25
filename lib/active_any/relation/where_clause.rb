@@ -16,7 +16,7 @@ module ActiveAny
           register_handler(Array, :array_handler)
         end
 
-        def evaluate(adapter, record)
+        def evaluate(adapter, record = nil)
           adapter.public_send(handle_for(value), record, key, value)
         end
 
