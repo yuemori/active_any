@@ -21,7 +21,7 @@ module TestData
       new(id: 12, name: 'charlie', age: 50)
     ]
 
-    has_many :comments
+    has_many :comments, class_name: 'TestData::Comment'
   end
 
   class Comment < ActiveAny::Hash
@@ -41,7 +41,7 @@ module TestData
       { id: 12, user_object_id: 1, message: 'hello 12' }
     ]
 
-    belongs_to :user_object
+    belongs_to :user_object, class_name: 'TestData::UserObject'
   end
 
   class UserHash < ActiveAny::Hash

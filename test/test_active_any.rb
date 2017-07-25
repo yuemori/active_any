@@ -14,6 +14,9 @@ class ActiveAnyTest < Minitest::Test
     assert { UserObject.all.is_a?(ActiveAny::Relation) }
     assert { UserHash.all.is_a?(ActiveAny::Relation) }
     assert { UserObject.all.to_a.is_a?(Array) }
+    assert { UserObject.includes(:comments).to_a.is_a?(Array) }
+    assert { Comment.includes(:user_object).to_a.is_a?(Array) }
+    assert { UserHash.all.to_a.is_a?(Array) }
     assert { UserHash.all.to_a.is_a?(Array) }
   end
 end
