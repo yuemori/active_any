@@ -62,12 +62,16 @@ module ActiveAny
       super
     end
 
+    def association_cache
+      @association_cache ||= {}
+    end
+
     def association_instance_get(name)
-      @association_cache[name]
+      association_cache[name]
     end
 
     def association_instance_set(name, association)
-      @association_cache[name] = association
+      association_cache[name] = association
     end
   end
 end
