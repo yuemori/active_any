@@ -63,19 +63,26 @@ module ActiveAny
     class MissingFileError; end
 
     class << self
-      attr_accessor :file
+      attr_reader :file
+
+      def file=(file)
+        csv = ::CSV.new(file, headers: true)
+        headers = csv.first
+        headers.each { |header| attribute header }
+      end
 
       def data
         @data ||= begin
           raise MissingFileError unless file
 
           table = ::CSV.table(file)
-          table.headers.each do |header|
-            attribute header
-          end
-
           table.map { |row| new(row.to_h) }
         end
+      end
+
+      def reload
+        @data = nil
+        data
       end
 
       def adapter
