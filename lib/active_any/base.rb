@@ -16,10 +16,6 @@ module ActiveAny
   class Object < Base
     self.abstract_class = true
 
-    def self.inherited(child)
-      child.abstract_class = false
-    end
-
     class << self
       attr_accessor :data
 

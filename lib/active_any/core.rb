@@ -5,9 +5,7 @@ module ActiveAny
     extend ActiveSupport::Concern
 
     included do
-      class_attribute :abstract_class, instance_writer: false
       class_attribute :primary_key, instance_writer: false
-      self.abstract_class = true
       self.primary_key = nil
     end
 
@@ -16,6 +14,8 @@ module ActiveAny
     end
 
     module ClassMethods
+      attr_accessor :abstract_class
+
       def unscoped
         # TODO: implement
         all
