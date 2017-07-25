@@ -9,3 +9,7 @@ require 'pry-byebug'
 require 'pry-coolline'
 require 'pry-inline'
 require 'pry-state'
+
+ActiveAny.configure do |config|
+  config.log_level = :warn
+end
