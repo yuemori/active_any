@@ -87,7 +87,7 @@ module ActiveAny
 
       def automatic_inverse_of
         if can_find_inverse_of_automatically?(self)
-          inverse_name = ActiveSupport::Inflector.underscore(options[:as] || active_record.name.demodulize).to_sym
+          inverse_name = ActiveSupport::Inflector.underscore(options[:as] || record_class.name.demodulize).to_sym
 
           begin
             reflection = klass._reflect_on_association(inverse_name)

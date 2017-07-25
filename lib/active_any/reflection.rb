@@ -45,11 +45,13 @@ module ActiveAny
     end
 
     def self.add_reflection(klass, name, reflection)
-      klass.reflections = klass.reflections.merge(name.to_s => reflection)
+      klass._reflections = klass.reflections.merge(name.to_s => reflection)
     end
 
-    def self._reflect_on_association(association)
-      _reflections[association.to_s]
+    module ClassMethods
+      def _reflect_on_association(association)
+        _reflections[association.to_s]
+      end
     end
   end
 end
