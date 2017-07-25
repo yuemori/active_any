@@ -50,10 +50,6 @@ module ActiveAny
         @foreign_key ||= options[:foreign_key] || derive_foreign_key.freeze
       end
 
-      def primary_key
-        @primary_key ||= options[:primary_key] || primary_key_for_record_class
-      end
-
       def scope_for(klass)
         scope ? klass.unscoped.instance_exec(nil, &scope) : klass.unscoped
       end
@@ -77,7 +73,15 @@ module ActiveAny
         @inverse_of ||= klass._reflect_on_association inverse_name
       end
 
+      def record_class_primary_key
+        @primary_key ||= options[:primary_key] || primary_key(record_class)
+      end
+
       private
+
+      def primary_key(record_class)
+        record_class.primary_key || (raise UnknownPrimaryKey.new, klass)
+      end
 
       def inverse_name
         options.fetch(:inverse_of) do
@@ -127,10 +131,6 @@ module ActiveAny
 
       def join_fk
         raise NotImplementedError
-      end
-
-      def primary_key_for_record_class
-        klass.primary_key || (raise UnknownPrimaryKey.new, klass)
       end
 
       def derive_class_name

@@ -17,7 +17,7 @@ module ActiveAny
         end
 
         def owner_key_name
-          reflection.primary_key
+          reflection.record_class_primary_key
         end
       end
     end
