@@ -14,8 +14,10 @@ module ActiveAny
   end
 
   class Object < Base
+    self.abstract_class = true
+
     def self.inherited(child)
-      child.abstract_class = true
+      child.abstract_class = false
     end
 
     class << self
@@ -28,8 +30,10 @@ module ActiveAny
   end
 
   class Hash < Base
+    self.abstract_class = true
+
     def self.inherited(child)
-      child.abstract_class = true
+      child.abstract_class = false
     end
 
     class << self
@@ -50,8 +54,10 @@ module ActiveAny
   end
 
   class CSV < Base
+    self.abstract_class = true
+
     def self.inherited(child)
-      child.abstract_class = true
+      child.abstract_class = false
     end
 
     class MissingFileError; end
