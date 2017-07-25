@@ -85,6 +85,15 @@ module ActiveAny
       false
     end
 
+    def inspect
+      subject = loaded? ? records : self
+      entries = subject.take([limit_value, 11].compact.min).map!(&:inspect)
+
+      entries[10] = '...' if entries.size == 11
+
+      "#<#{self.class.name} [#{entries.join(', ')}]>"
+    end
+
     private
 
     def spawn
