@@ -87,7 +87,7 @@ module ActiveAny
         end
       end
 
-      def preloader_for(reflection, owners, rhs_klass) # rubocop:disable Metrics/MethodLength
+      def preloader_for(reflection, owners, rhs_klass)
         return NullPreloader unless rhs_klass
 
         if owners.first.association(reflection.name).loaded?
