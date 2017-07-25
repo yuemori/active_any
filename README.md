@@ -28,7 +28,7 @@ Or install it yourself as:
 
 ```ruby
 class User < ActiveAny::Object
-  attr_accessor :id, :name, :age
+  attributes :id, :name, :age
 
   self.data = [
     new(id: 1, name: 'alice',   age: 20),
