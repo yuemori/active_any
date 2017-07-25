@@ -25,6 +25,18 @@ module ActiveAny
         # TODO: implement
         all
       end
+
+      def new(*args, &block)
+        if abstract_class? || self == Base
+          raise NotImplementedError, "#{self} is an abstract class and cannot be instantiated."
+        end
+
+        super
+      end
+
+      def abstract_class?
+        defined?(@abstract_class) && abstract_class == true
+      end
     end
 
     def initialize(*args)
