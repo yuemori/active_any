@@ -64,7 +64,7 @@ module ActiveAny
       end
 
       def has_attribute?(attribute)
-        attribute_names.key?(attribute)
+        attribute_names.include?(attribute)
       end
     end
   end
