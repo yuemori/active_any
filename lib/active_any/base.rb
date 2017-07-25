@@ -3,6 +3,7 @@
 module ActiveAny
   class Base
     include Core
+    include Attribute
     include Associations
     include AttributeAssignment
     include Finders
@@ -32,8 +33,8 @@ module ActiveAny
       attr_reader :data
 
       def data=(data)
-        data.map(&:keys).flatten.each do |method|
-          attr_accessor method
+        data.map(&:keys).flatten.uniq.each do |method|
+          attribute method
         end
 
         @data = data.map { |d| new(d) }

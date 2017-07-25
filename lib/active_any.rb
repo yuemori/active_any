@@ -4,6 +4,7 @@ require 'active_support'
 require 'active_support/core_ext'
 
 require 'active_any/version'
+require 'active_any/attribute'
 require 'active_any/configuration'
 require 'active_any/relation'
 require 'active_any/reflection'

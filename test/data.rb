@@ -2,7 +2,7 @@
 
 module TestData
   class UserObject < ActiveAny::Object
-    attr_accessor :id, :name, :age
+    attributes :id, :name, :age
 
     self.primary_key = :id
 

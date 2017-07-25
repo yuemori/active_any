@@ -35,10 +35,6 @@ module ActiveAny
       send(key)
     end
 
-    def has_attribute?(attribute)
-      self.class.instance_methods.include?(attribute.to_s)
-    end
-
     private
 
     def init_internals(*); end
