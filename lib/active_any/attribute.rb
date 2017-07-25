@@ -59,7 +59,7 @@ module ActiveAny
 
       def define_reader_method(name)
         define_method name do
-          attributes.fetch(name)
+          attributes.fetch(name, nil)
         end
       end
 
