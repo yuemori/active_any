@@ -32,10 +32,6 @@ module ActiveAny
   class Hash < Base
     self.abstract_class = true
 
-    def self.inherited(child)
-      child.abstract_class = false
-    end
-
     class << self
       attr_reader :data
 
@@ -55,10 +51,6 @@ module ActiveAny
 
   class CSV < Base
     self.abstract_class = true
-
-    def self.inherited(child)
-      child.abstract_class = false
-    end
 
     class MissingFileError; end
 
