@@ -51,7 +51,7 @@ module ActiveAny
       elsif other.respond_to?(:to_proc)
         instance_exec(&other)
       else
-        raise ArgumentError, "#{other.inspect} is not an ActiveRecord::Relation"
+        raise ArgumentError, "#{other.inspect} is not an ActiveAny::Relation"
       end
     end
 
