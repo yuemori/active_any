@@ -67,22 +67,20 @@ Clone repository and run `bin/console`, if you want to try it!
   - [ ] `joins`      (interface only)
   - [ ] `preload`    (interface only)
   - [ ] `eager_load` (interface only)
-  - [ ] `includes`
+  - [x] `includes`
   - [ ] `having`
   - [ ] `offset`
 - Adapters
-  - [ ] API
   - [ ] YAML
   - [ ] JSON
   - [ ] CSV
 - ActiveRecord like interfaces
   - [ ] Interface for other than select query (create, destroy, update)
   - [ ] enum support
-  - [ ] logging
+  - [x] subscriber
   - [ ] scoping
 - Integration
   - [ ] ActiveRecord
-  - [ ] ActiveModelSerializers
 
 ## Testing
 
