@@ -105,9 +105,7 @@ module ActiveAny
           #   scope.joins!(reflection_scope.joins_values)
           # end
           order_values = preload_values[:order] || values[:order]
-          if order_values
-            scope.order!(order_values)
-          end
+          scope.order!(order_values) if order_values
 
           # if preload_values[:reordering] || values[:reordering]
           #   scope.reordering_value = true

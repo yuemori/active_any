@@ -101,9 +101,7 @@ module ActiveAny
             reflection = false
           end
 
-          if valid_inverse_reflection?(reflection)
-            return inverse_name
-          end
+          return inverse_name if valid_inverse_reflection?(reflection)
         end
 
         false
