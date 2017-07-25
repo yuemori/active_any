@@ -15,7 +15,6 @@ require 'active_any/finders'
 require 'active_any/core'
 require 'active_any/base'
 require 'active_any/subscriber'
-require 'active_any/adapter'
 require 'active_any/adapters/abstract_adapter'
 require 'active_any/adapters/object_adapter'
 
