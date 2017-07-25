@@ -45,7 +45,7 @@ module ActiveAny
       association = association_instance_get(name)
 
       if association.nil?
-        reflection = self.class.reflections[name.to_s]
+        reflection = self.class._reflect_on_association(name)
         raise AssociationNotFoundError.new(self, name) unless reflection
 
         association = reflection.association_class.new(self, reflection)
