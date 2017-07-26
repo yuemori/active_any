@@ -3,11 +3,13 @@
 module ActiveAny
   module Associations
     class HasManyAssociation < Association
+      include ForeignAssociation
+
       def reader
         # TODO: implement
         # reload if stale_target?
 
-        @proxy ||= CollectionProxy.create(owner, self)
+        @proxy ||= CollectionProxy.create(klass, self)
         @proxy.reset_scope
       end
 

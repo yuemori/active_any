@@ -16,6 +16,10 @@ module ActiveAny
       attributes.fetch(name)
     end
 
+    def attribute_present?(name)
+      attributes[name].present?
+    end
+
     def attribute_for_inspect(attr_name)
       value = read_attribute(attr_name)
 

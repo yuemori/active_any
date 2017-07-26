@@ -2,7 +2,8 @@
 
 module ActiveAny
   module Associations
-    class BelongsToAssociation < SingularAssociation
+    class HasOneAssociation < SingularAssociation
+      include ForeignAssociation
     end
   end
 end

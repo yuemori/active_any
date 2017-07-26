@@ -2,6 +2,7 @@
 
 require 'active_any/reflection/association_reflection'
 require 'active_any/reflection/has_many_reflection'
+require 'active_any/reflection/has_one_reflection'
 require 'active_any/reflection/belongs_to_reflection'
 
 module ActiveAny
@@ -33,6 +34,8 @@ module ActiveAny
     def self.create(macro, name, scope, options, klass)
       reflection_class =
         case macro
+        when :has_one
+          HasOneReflection
         when :belongs_to
           BelongsToReflection
         when :has_many

@@ -14,11 +14,7 @@ module ActiveAny
       end
 
       def reader
-        # TODO: implement
-        # reload if stale_target?
-
-        @proxy ||= CollectionProxy.create(owner, self)
-        @proxy.reset_scope
+        raise NotImplementedError.new, 'reader is unimplemented'
       end
 
       def writer(_records)
@@ -110,7 +106,11 @@ module ActiveAny
       end
 
       def find_target?
-        !loaded? && klass
+        !loaded? && foreign_key_present? && klass
+      end
+
+      def foreign_key_present
+        false
       end
 
       def inverse_reflection_for(_record)

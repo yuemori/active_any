@@ -6,19 +6,18 @@ module ActiveAny
       class Association
         def self.build(klass, name, scope, options)
           reflection = create_reflection(klass, name, scope, options)
-          define_writer_method klass, reflection.name
-          define_reader_method klass, reflection.name
+          define_accessors klass, reflection
           reflection
         end
 
         VALID_OPTIONS = %i[class_name foreign_key].freeze
 
-        def self.valid_options
+        def self.valid_options(_options)
           VALID_OPTIONS
         end
 
         def self.validate_options(options)
-          options.assert_valid_keys(valid_options)
+          options.assert_valid_keys(valid_options(options))
         end
 
         def self.create_reflection(klass, name, scope, options)
@@ -41,16 +40,23 @@ module ActiveAny
           new_scope
         end
 
-        def self.define_reader_method(klass, name)
-          klass.class_eval <<-CODE, __FILE__, __LINE__ + 1
+        def self.define_accessors(klass, reflection)
+          mixin = klass.generated_association_methods
+          name = reflection.name
+          define_readers(mixin, name)
+          define_writers(mixin, name)
+        end
+
+        def self.define_readers(mixin, name)
+          mixin.class_eval <<-CODE, __FILE__, __LINE__ + 1
             def #{name}(*args)
               association(:#{name}).reader(*args)
             end
           CODE
         end
 
-        def self.define_writer_method(klass, name)
-          klass.class_eval <<-CODE, __FILE__, __LINE__ + 1
+        def self.define_writers(mixin, name)
+          mixin.class_eval <<-CODE, __FILE__, __LINE__ + 1
             def #{name}=(value)
               association(:#{name}).writer(value)
             end

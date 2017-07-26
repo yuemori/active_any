@@ -80,9 +80,23 @@ module ActiveAny
         end
       end
 
-      def respond_to_missing?(name, include_private)
-        super
+      def respond_to_missing?(name, _)
+        super || @klass.respond_to?(name)
       end
+    end
+
+    module ClassMethods
+      def create(klass, *args)
+        relation_class_for(klass).new(klass, *args)
+      end
+
+      def relation_class_for(klass)
+        klass.relation_delegate_class(self)
+      end
+    end
+
+    def respond_to_missing?(name, _)
+      super || @klass.respond_to?(name)
     end
   end
 end

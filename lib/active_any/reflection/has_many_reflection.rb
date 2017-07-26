@@ -22,7 +22,7 @@ module ActiveAny
       end
 
       def join_fk
-        primary_key
+        record_class_primary_key
       end
     end
   end

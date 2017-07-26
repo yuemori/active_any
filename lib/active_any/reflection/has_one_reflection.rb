@@ -2,27 +2,31 @@
 
 module ActiveAny
   module Reflection
-    class BelongsToReflection < AssociationReflection
+    class HasOneReflection < AssociationReflection
       def association_class
-        Associations::BelongsToAssociation
+        Associations::HasOneAssociation
       end
 
       def macro
-        :belongs_to
+        :has_one
       end
 
-      def belongs_to?
+      def has_one?
         true
+      end
+
+      def collection?
+        false
       end
 
       private
 
       def join_pk
-        record_class_primary_key
+        foreign_key
       end
 
       def join_fk
-        foreign_key
+        record_class_primary_key
       end
     end
   end

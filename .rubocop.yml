@@ -16,6 +16,9 @@ Style/PredicateName:
 Style/AccessorMethodName:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Metrics/ClassLength:
   Max: 120
 

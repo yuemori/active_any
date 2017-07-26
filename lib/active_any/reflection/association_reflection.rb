@@ -40,6 +40,10 @@ module ActiveAny
         false
       end
 
+      def has_one?
+        false
+      end
+
       JoinKeys = Struct.new(:key, :foreign_key)
 
       def join_keys

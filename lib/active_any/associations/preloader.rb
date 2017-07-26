@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'active_any/associations/preloader/association'
+require 'active_any/associations/preloader/singular_association'
 require 'active_any/associations/preloader/has_many'
+require 'active_any/associations/preloader/has_one'
 require 'active_any/associations/preloader/belongs_to'
 
 module ActiveAny

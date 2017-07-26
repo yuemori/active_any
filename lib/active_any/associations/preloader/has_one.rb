@@ -3,13 +3,13 @@
 module ActiveAny
   module Associations
     class Preloader
-      class BelongsTo < SingularAssociation
+      class HasOne < SingularAssociation
         def association_key_name
-          reflection.options[:primary_key] || klass && klass.primary_key
+          reflection.foreign_key
         end
 
         def owner_key_name
-          reflection.foreign_key
+          reflection.record_class_primary_key
         end
       end
     end

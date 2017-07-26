@@ -20,14 +20,6 @@ module ActiveAny
 
     class ImmutableRelation < StandardError; end
 
-    def self.create(klass, *args)
-      relation_class_for(klass).new(klass, *args)
-    end
-
-    def self.relation_class_for(klass)
-      klass.relation_delegate_class(self)
-    end
-
     def initialize(klass)
       @klass = klass
       @records = []
