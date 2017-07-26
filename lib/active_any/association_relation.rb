@@ -14,5 +14,14 @@ module ActiveAny
     def ==(other)
       other == records
     end
+
+    private
+
+    def exec_queries
+      super do |r|
+        @association.set_inverse_instance r
+        yield r if block_given?
+      end
+    end
   end
 end
