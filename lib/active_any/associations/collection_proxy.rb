@@ -5,12 +5,17 @@ module ActiveAny
     class CollectionProxy < ActiveAny::Relation
       attr_reader :association
 
-      delegate :target, :load_target, :load_target,
+      delegate :target, :load_target, :load_target, :loaded?, :find, :concat,
                :size, :empty?, :include?, to: :@association
 
       def initialize(klass, association)
         @association = association
         super(klass)
+      end
+
+      def last(limit = nil)
+        load_target if find_from_target?
+        super
       end
 
       def take(limit = nil)

@@ -47,7 +47,7 @@ module ActiveAny
       def load_target
         @target = find_target if find_target?
 
-        loaded! unless loaded?
+        loaded!
         target
         # TODO: implement
         # rescue ActiveRecord::RecordNotFound
@@ -106,7 +106,7 @@ module ActiveAny
       end
 
       def find_target?
-        !loaded? && foreign_key_present? && klass
+        !loaded? && (!owner.new_record? || foreign_key_present?) && klass
       end
 
       def foreign_key_present

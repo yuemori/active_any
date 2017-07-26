@@ -53,6 +53,10 @@ module ActiveAny
       init_internals(*args)
     end
 
+    def new_record?
+      false
+    end
+
     def [](key)
       send(key)
     end
